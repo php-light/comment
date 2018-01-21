@@ -15,7 +15,7 @@
     }
   ],
   "autoload": {
-    "psr-4": { "PhpLight\\Comment\\": "" },
+    "psr-4": { "PhpLight\\CommentBundle\\": "" },
     "exclude-from-classmap": [
       "/Tests/"
     ]
