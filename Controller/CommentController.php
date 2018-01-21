@@ -42,6 +42,21 @@ class CommentController extends Controller
             array_merge($filter, $request->getPost()["query"]);
         }
 
-        dump((new CommentRepository())->get($filter));
+        return new JsonResponse([
+            "success" => true,
+            "comments" => (new CommentRepository())->get($filter)
+        ]);
+    }
+
+    public function countAction(Request $request)
+    {
+        $filter = array_merge($request->getGet(), $request->getGet());
+
+        unset($filter["route"]);
+
+        return new JsonResponse([
+            "success" => true,
+            "count" => (new CommentRepository())->count($filter)
+        ]);
     }
 }

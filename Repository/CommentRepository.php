@@ -77,4 +77,25 @@ class CommentRepository
 
         return $db->query($sql)->fetchAll($db::FETCH_ASSOC);
     }
+
+    public function count(array $filter=[])
+    {
+        $db = (new DB())->connect();
+
+        $sql = "SELECT count(*) FROM `comment` WHERE TRUE ";
+
+        if (!empty($filter)) {
+            $sql .= " AND ";
+
+            foreach ($filter as $item => $value) {
+                $sql .= "`$item`='$value'";
+
+                if ($value !== end($filter)) {
+                    $sql .= " AND ";
+                }
+            }
+        }
+
+        return $db->query($sql)->fetch($db::FETCH_ASSOC);
+    }
 }
