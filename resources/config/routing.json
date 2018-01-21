@@ -1,0 +1,14 @@
+{
+  "route": {
+    "comment_create": {
+      "path": "/comment/new",
+      "controller": "PhpLight\\CommentBundle\\Controller\\Comment",
+      "action": "create"
+    },
+    "comment_get": {
+      "path": "/comment/",
+      "controller": "PhpLight\\CommentBundle\\Controller\\Comment",
+      "action": "get"
+    }
+  }
+}

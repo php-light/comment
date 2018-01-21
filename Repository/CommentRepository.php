@@ -10,6 +10,71 @@
 namespace PhpLight\CommentBundle\Repository;
 
 
+use PhpLight\CommentBundle\Entity\Comment;
+use PhpLight\Framework\Components\DB\DB;
+
 class CommentRepository
 {
+    public function create(Comment $comment)
+    {
+        $db = (new DB())->connect();
+
+        $query = $db->prepare("INSERT INTO `comment` (`parentTable`, `parent`, `comment`, `createdAt`, `createdBy`)
+                VALUES (:parentTable, :parent, :comment, :createdAt, :createdBy)");
+
+        $query->bindValue(':parentTable', $comment->getParentTable());
+        $query->bindValue(':parent', $comment->getParent());
+        $query->bindValue(':comment', $comment->getComment());
+        $query->bindValue(':createdAt', $comment->getCreatedAt()->format("Y-m-d H:i:s"));
+        $query->bindValue(':createdBy', $comment->getCreatedBy()->getUid());
+
+        if ($query->execute()) {
+            $comment->setId($db->lastInsertId());
+            return $comment;
+        } else {
+            dump($db->errorInfo());
+            return false;
+        }
+    }
+
+    public function get(array $filter)
+    {
+        if (!isset($filter["column"]) && !isset($filter["id"])) {
+            die("You need to specify the column to use and the value you are looking for");
+        }
+
+        $sql = "SELECT * FROM `comment` WHERE TRUE AND ";
+        $orderName = " `createdAt` ";
+        $orderBy = " DESC ";
+
+        if (isset($filter["orderName"])) {
+            $orderName = "`" . $filter["orderName"] . "`";
+            unset($filter["orderName"]);
+        }
+
+        if (isset($filter["orderBy"])) {
+            $orderBy = "`" . $filter["orderBy"] . "`";
+            unset($filter["orderBy"]);
+        }
+
+        $sql .= " `parentTable`='" . $filter['parent'] . "' AND `parent`='" . $filter["id"] . "' ";
+        unset($filter["parent"], $filter["id"]);
+
+        if (!empty($filter)) {
+            $sql .= " AND ";
+            foreach ($filter as $item => $value) {
+                $sql .= " `$item`='$value' ";
+
+                if ($value !== end($filter)) {
+                    $sql .= " AND ";
+                }
+            }
+        }
+
+        $sql = $sql . "ORDER BY " . $orderName . $orderBy;
+
+        $db = (new DB())->connect();
+
+        return $db->query($sql)->fetchAll($db::FETCH_ASSOC);
+    }
 }

@@ -7,11 +7,10 @@
  */
 
 
-namespace PhpLight\CommentBundle\Comment;
+namespace PhpLight\CommentBundle\Entity;
 
 
 use PhpLight\Framework\Components\Model;
-use PhpLight\Security\Model\User;
 
 class Comment extends Model
 {
@@ -19,6 +18,11 @@ class Comment extends Model
      * @var int
      */
     private $id;
+
+    /**
+     * @var string
+     */
+    private $parentTable;
 
     /**
      * @var string
@@ -40,6 +44,12 @@ class Comment extends Model
      */
     private $createdBy;
 
+    public function __construct(array $data = [])
+    {
+        parent::__construct($data);
+        $this->createdAt = new \DateTime('NOW');
+    }
+
     /**
      * @return int
      */
@@ -55,6 +65,24 @@ class Comment extends Model
     public function setId($id)
     {
         $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParentTable()
+    {
+        return $this->parentTable;
+    }
+
+    /**
+     * @param string $parentTable
+     * @return Comment
+     */
+    public function setParentTable($parentTable)
+    {
+        $this->parentTable = $parentTable;
         return $this;
     }
 

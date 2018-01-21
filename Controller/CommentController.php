@@ -10,6 +10,38 @@
 namespace PhpLight\CommentBundle\Controller;
 
 
-class CommentController
+use PhpLight\CommentBundle\Entity\Comment;
+use PhpLight\CommentBundle\Repository\CommentRepository;
+use PhpLight\Framework\Controller\Controller;
+use PhpLight\Http\Request\Request;
+use PhpLight\Http\Response\JsonResponse;
+
+class CommentController extends Controller
 {
+    public function createAction(Request $request, array $comment=[])
+    {
+        try {
+            $comment = empty($comment) ? new Comment($request->getPost()["comment"]) : new Comment($comment);
+        } catch (\Exception $exception) {
+            die($exception);
+        }
+
+        return new JsonResponse([
+            "success" => true,
+            "comment" => (new CommentRepository())->create($comment)
+        ]);
+    }
+
+    public function getAction(Request $request)
+    {
+        unset($request->getGet()["route"]);
+        $filter = $request->getGet();
+        unset($filter["route"]);
+
+        if (isset($request->getPost()["query"])) {
+            array_merge($filter, $request->getPost()["query"]);
+        }
+
+        dump((new CommentRepository())->get($filter));
+    }
 }
