@@ -26,6 +26,10 @@ class CommentController extends Controller
             die($exception);
         }
 
+        $comment->setParent($request->getGet()["id"]);
+        $comment->setParentTable($request->getGet()["parent"]);
+        $comment->setCreatedBy($request->getUser());
+
         return new JsonResponse([
             "success" => true,
             "comment" => (new CommentRepository())->create($comment)
