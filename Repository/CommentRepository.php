@@ -98,4 +98,11 @@ class CommentRepository
 
         return $db->query($sql)->fetch($db::FETCH_ASSOC);
     }
+
+    public function delete($commentId)
+    {
+        $db = (new DB())->connect();
+
+        return $db->exec("DELETE FROM `comment` WHERE `id`=" . (int) $commentId);
+    }
 }

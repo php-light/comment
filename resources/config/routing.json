@@ -14,6 +14,11 @@
       "path": "/comment/count/:filter?",
       "controller": "PhpLight\\CommentBundle\\Controller\\Comment",
       "action": "count"
+    },
+    "comment_delete": {
+      "path": "/comment/:id",
+      "controller": "PhpLight\\CommentBundle\\Controller\\Comment",
+      "action": "delete"
     }
   }
 }
