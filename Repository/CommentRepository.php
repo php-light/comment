@@ -10,7 +10,9 @@
 namespace PhpLight\CommentBundle\Repository;
 
 
+use BNPPARIBAS\DataAnalyticsProjects\Repository\UserRepository;
 use PhpLight\CommentBundle\Entity\Comment;
+use PhpLight\Framework\Components\Config;
 use PhpLight\Framework\Components\DB\DB;
 
 class CommentRepository
@@ -30,6 +32,7 @@ class CommentRepository
 
         if ($query->execute()) {
             $comment->setId($db->lastInsertId());
+
             return $comment;
         } else {
             dump($db->errorInfo());
@@ -75,7 +78,21 @@ class CommentRepository
 
         $db = (new DB())->connect();
 
-        return $db->query($sql)->fetchAll($db::FETCH_ASSOC);
+        $coms = $db->query($sql)->fetchAll($db::FETCH_ASSOC);
+
+        $comments = [];
+        foreach ($coms as $comment) {
+            $userRepositoryNamespace = (new Config())->getConfig()["user_repository"];
+
+            /** @var UserRepository $userRepository */
+            $userRepository = new $userRepositoryNamespace;
+
+            $comment["createdBy"] = $userRepository->findDataByUid($comment["createdBy"]);
+
+            $comments[] = $comment;
+        }
+
+        return $comments;
     }
 
     public function count(array $filter=[])

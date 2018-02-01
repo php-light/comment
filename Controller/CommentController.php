@@ -12,6 +12,7 @@ namespace PhpLight\CommentBundle\Controller;
 
 use PhpLight\CommentBundle\Entity\Comment;
 use PhpLight\CommentBundle\Repository\CommentRepository;
+use PhpLight\Framework\Components\Model;
 use PhpLight\Framework\Controller\Controller;
 use PhpLight\Http\Request\Request;
 use PhpLight\Http\Response\JsonResponse;
@@ -30,9 +31,11 @@ class CommentController extends Controller
         $comment->setParentTable($request->getGet()["parent"]);
         $comment->setCreatedBy($request->getUser());
 
+        $newComment = (new CommentRepository())->create($comment);
+
         return new JsonResponse([
             "success" => true,
-            "comment" => (new CommentRepository())->create($comment)
+            "comment" => $newComment->toArray()
         ]);
     }
 

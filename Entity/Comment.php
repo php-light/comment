@@ -17,32 +17,32 @@ class Comment extends Model
     /**
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      */
-    private $parentTable;
+    protected $parentTable;
 
     /**
      * @var string
      */
-    private $parent;
+    protected $parent;
 
     /**
      * @var string
      */
-    private $comment;
+    protected $comment;
 
     /**
      * @var \DateTime
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var @User
      */
-    private $createdBy;
+    protected $createdBy;
 
     public function __construct(array $data = [])
     {
