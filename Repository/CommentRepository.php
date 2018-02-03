@@ -33,6 +33,7 @@ class CommentRepository
         if ($query->execute()) {
             $comment->setId($db->lastInsertId());
 
+            $comment->setCreatedAt($comment->getCreatedAt()->format("Y-m-d H:i:s"));
             return $comment;
         } else {
             dump($db->errorInfo());
