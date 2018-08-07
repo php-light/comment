@@ -12,6 +12,7 @@ namespace PhpLight\CommentBundle\Controller;
 
 use PhpLight\CommentBundle\Entity\Comment;
 use PhpLight\CommentBundle\Repository\CommentRepository;
+use PhpLight\Framework\Components\Config;
 use PhpLight\Framework\Components\Model;
 use PhpLight\Framework\Controller\Controller;
 use PhpLight\Http\Request\Request;
@@ -32,6 +33,28 @@ class CommentController extends Controller
         $comment->setCreatedBy($request->getUser());
 
         $newComment = (new CommentRepository())->create($comment);
+
+        $configs = (new Config())->getConfig();
+        if (isset($configs["phplight_comment"])) {
+            if (isset($configs["phplight_comment"]["listener"])) {
+                if (!isset($configs["phplight_comment"]["listener"]["create_success"]["class"])) {
+                    dump("You should specify an object");die;
+                }
+                if (!isset($configs["phplight_comment"]["listener"]["create_success"]["method"])) {
+                    dump("You should specify a method");die;
+                }
+                if (!is_object(new $configs["phplight_comment"]["listener"]["create_success"]["class"])) {
+                    dump("The listener does not exist in the namespace");die;
+                }
+                if (!method_exists($configs["phplight_comment"]["listener"]["create_success"]["class"], $configs["phplight_comment"]["listener"]["create_success"]["method"])) {
+                    dump("The method does not exist in the class");die;
+                }
+
+                $listener = new $configs["phplight_comment"]["listener"]["create_success"]["class"];
+                $method = $configs["phplight_comment"]["listener"]["create_success"]["method"];
+                $listener::$method($request, $newComment);
+            }
+        }
 
         return new JsonResponse([
             "success" => true,
