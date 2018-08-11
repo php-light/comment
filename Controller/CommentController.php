@@ -102,4 +102,17 @@ class CommentController extends Controller
             "success" => (new CommentRepository())->delete($request->getPost()["commentId"])
         ]);
     }
+
+    public function editAction(Request $request)
+    {
+        if ($request->getMethod() !== $request::REQUEST_METHOD_POST) {
+            return new JsonResponse([
+                "message" => "This method is not allowed"
+            ]);
+        }
+
+        return new JsonResponse([
+            "success" => (new CommentRepository())->edit($request->getPost()["commentId"], $request->getPost()["updatedComment"])
+        ]);
+    }
 }

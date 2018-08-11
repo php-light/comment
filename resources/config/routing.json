@@ -19,6 +19,11 @@
       "path": "/comment/:id",
       "controller": "PhpLight\\CommentBundle\\Controller\\Comment",
       "action": "delete"
+    },
+    "comment_edit": {
+      "path": "/comment/:id",
+      "controller": "PhpLight\\CommentBundle\\Controller\\Comment",
+      "action": "edit"
     }
   }
 }

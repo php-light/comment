@@ -123,4 +123,23 @@ class CommentRepository
 
         return $db->exec("DELETE FROM `comment` WHERE `id`=" . (int) $commentId);
     }
+
+    public function edit($commentId, $comment)
+    {
+        $db = (new DB())->connect();
+
+        $query = $db->prepare(
+            "UPDATE `comment` SET `comment`=:comment WHERE `id`=:id"
+        );
+
+        $query->bindValue(':comment', $comment);
+        $query->bindValue(':id', $commentId);
+
+        if ($query->execute()) {
+            return true;
+        } else {
+            dump($db->errorInfo());
+            return false;
+        }
+    }
 }
